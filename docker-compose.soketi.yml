@@ -17,12 +17,9 @@ services:
       - SOKETI_HOST=0.0.0.0
       - SOKETI_PORT=6001
 
-      # Adapter Redis pour la scalabilité
+      # Adapter Redis avec URL complète
       - SOKETI_ADAPTER_DRIVER=${SOKETI_ADAPTER_DRIVER:-redis}
-      - SOKETI_REDIS_HOST=${REDIS_HOST:-rk0wk0k88oow0gws4kgg44k8}
-      - SOKETI_REDIS_PORT=${REDIS_PORT:-6379}
-      - SOKETI_REDIS_PASSWORD=${REDIS_PASSWORD:-3U4SY7Yt15nM1nzyqGGrZKVst2Quj5gRfll2lfhcvnbfLdGfsH163vOj3kfXwYDr}
-      - SOKETI_REDIS_DB=${REDIS_DB:-0}
+      - SOKETI_ADAPTER_REDIS_URL=${REDIS_URL:-redis://3U4SY7Yt15nM1nzyqGGrZKVst2Quj5gRfll2lfhcvnbfLdGfsH163vOj3kfXwYDr@rk0wk0k88oow0gws4kgg44k8:6379/0}
 
       # Cache en mémoire pour performance
       - SOKETI_CACHE_DRIVER=memory
