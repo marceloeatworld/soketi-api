@@ -78,10 +78,3 @@ services:
       - traefik.http.routers.soketi-metrics.service=soketi-metrics
       - traefik.http.services.soketi-metrics.loadbalancer.server.port=9601
 
-    # Réseau (optionnel si tu utilises un réseau externe)
-    networks:
-      - aiphotobooth-network
-
-networks:
-  aiphotobooth-network:
-    external: true
