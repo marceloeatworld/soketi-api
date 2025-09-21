@@ -5,37 +5,37 @@ services:
     image: 'quay.io/soketi/soketi:latest-16-alpine'
     container_name: aiphotobooth-soketi
     environment:
-      # Debug mode (optionnel - Coolify affichera dans l'UI)
+      # Debug mode (optional - Coolify will display in UI)
       - SOKETI_DEBUG=${SOKETI_DEBUG:-0}
 
-      # Configuration Pusher compatible
+      # Pusher compatible configuration
       - SOKETI_DEFAULT_APP_ID=${PUSHER_APP_ID:-app-id}
       - SOKETI_DEFAULT_APP_KEY=${PUSHER_APP_KEY:-app-key}
       - SOKETI_DEFAULT_APP_SECRET=${PUSHER_APP_SECRET:-app-secret}
 
-      # IMPORTANT: Configuration du serveur (MANQUANT DANS L'ORIGINAL)
+      # IMPORTANT: Server configuration (MISSING IN ORIGINAL)
       - SOKETI_HOST=0.0.0.0
       - SOKETI_PORT=6001
 
-      # Adapter Redis pour la scalabilité
+      # Redis adapter for scalability
       - SOKETI_ADAPTER_DRIVER=${SOKETI_ADAPTER_DRIVER:-redis}
       - SOKETI_REDIS_HOST=${REDIS_HOST:-redis}
       - SOKETI_REDIS_PORT=${REDIS_PORT:-6379}
       - SOKETI_REDIS_PASSWORD=${REDIS_PASSWORD:-}
       - SOKETI_REDIS_DB=${REDIS_DB:-0}
 
-      # Cache en mémoire pour performance
+      # In-memory cache for performance
       - SOKETI_CACHE_DRIVER=memory
 
       # Performance optimizations
       - SOKETI_MAX_CONNECTIONS=${SOKETI_MAX_CONNECTIONS:-10000}
       - SOKETI_MAX_MEMORY_MB=${SOKETI_MAX_MEMORY_MB:-512}
 
-      # Métriques pour monitoring
+      # Metrics for monitoring
       - SOKETI_METRICS_ENABLED=true
       - SOKETI_METRICS_PORT=9601
 
-      # Coolify magic variables (optionnel)
+      # Coolify magic variables (optional)
       - SERVICE_FQDN_SOKETI_6001=
       - SERVICE_FQDN_SOKETI_9601=/metrics
 
@@ -45,7 +45,7 @@ services:
 
     restart: unless-stopped
 
-    # Health check pour monitoring
+    # Health check for monitoring
     healthcheck:
       test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:6001/"]
       interval: 30s
@@ -53,17 +53,17 @@ services:
       retries: 3
       start_period: 10s
 
-    # Resource limits optimisés pour WebSocket
+    # Resource limits optimized for WebSocket
     deploy:
       resources:
         limits:
-          cpus: '2'        # 2 CPU max - Soketi est léger
-          memory: 1G       # 1GB max - WebSocket consomme peu
+          cpus: '2'        # 2 CPU max - Soketi is lightweight
+          memory: 1G       # 1GB max - WebSocket consumes little
         reservations:
-          cpus: '0.5'      # 0.5 CPU garanti
-          memory: 256M     # 256MB garanti
+          cpus: '0.5'      # 0.5 CPU guaranteed
+          memory: 256M     # 256MB guaranteed
 
-    # Coolify labels pour proxy
+    # Coolify labels for proxy
     labels:
       - coolify.managed=true
       - traefik.enable=true
@@ -72,16 +72,9 @@ services:
       - traefik.http.routers.soketi-ws.entryPoints=http
       - traefik.http.routers.soketi-ws.service=soketi-ws
       - traefik.http.services.soketi-ws.loadbalancer.server.port=6001
-      # Métriques endpoint (optionnel)
+      # Metrics endpoint (optional)
       - "traefik.http.routers.soketi-metrics.rule=Host(`${SERVICE_FQDN_SOKETI}`) && PathPrefix(`/metrics`)"
       - traefik.http.routers.soketi-metrics.entryPoints=http
       - traefik.http.routers.soketi-metrics.service=soketi-metrics
       - traefik.http.services.soketi-metrics.loadbalancer.server.port=9601
 
-    # Réseau (optionnel si tu utilises un réseau externe)
-    networks:
-      - aiphotobooth-network
-
-networks:
-  aiphotobooth-network:
-    external: true
