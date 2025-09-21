@@ -5,21 +5,23 @@ services:
     image: 'quay.io/soketi/soketi:latest-16-alpine'
     container_name: aiphotobooth-soketi
     environment:
-      # Debug mode (optionnel - Coolify affichera dans l'UI)
-      - SOKETI_DEBUG=${SOKETI_DEBUG:-0}
+      # Debug activé pour voir les erreurs Redis
+      - SOKETI_DEBUG=1
+      - SOKETI_DEFAULT_APP_ID=aiphotobooth-app
+      - SOKETI_DEFAULT_APP_KEY=aiphotobooth-key
+      - SOKETI_DEFAULT_APP_SECRET=aiphotobooth-secret
 
-      # Configuration Pusher compatible
-      - SOKETI_DEFAULT_APP_ID=${PUSHER_APP_ID:-aiphotobooth-app}
-      - SOKETI_DEFAULT_APP_KEY=${PUSHER_APP_KEY:-aiphotobooth-key}
-      - SOKETI_DEFAULT_APP_SECRET=${PUSHER_APP_SECRET:-aiphotobooth-secret}
-
-      # IMPORTANT: Configuration du serveur (MANQUANT DANS L'ORIGINAL)
+      # Configuration du serveur
       - SOKETI_HOST=0.0.0.0
       - SOKETI_PORT=6001
 
-      # Adapter Redis avec URL complète (inclut username)
-      - SOKETI_ADAPTER_DRIVER=${SOKETI_ADAPTER_DRIVER:-redis}
-      - SOKETI_ADAPTER_REDIS_URL=${REDIS_URL:-redis://default:3U4SY7Yt15nM1nzyqGGrZKVst2Quj5gRfll2lfhcvnbfLdGfsH163vOj3kfXwYDr@rk0wk0k88oow0gws4kgg44k8:6379/0}
+      # Redis avec database différente (DB 1 au lieu de 0)
+      - SOKETI_ADAPTER_DRIVER=redis
+      - SOKETI_ADAPTER_REDIS_HOST=rk0wk0k88oow0gws4kgg44k8
+      - SOKETI_ADAPTER_REDIS_PORT=6379
+      - SOKETI_ADAPTER_REDIS_USERNAME=default
+      - SOKETI_ADAPTER_REDIS_PASSWORD=3U4SY7Yt15nM1nzyqGGrZKVst2Quj5gRfll2lfhcvnbfLdGfsH163vOj3kfXwYDr
+      - SOKETI_ADAPTER_REDIS_DB=1
 
       # Cache en mémoire pour performance
       - SOKETI_CACHE_DRIVER=memory
