@@ -36,11 +36,11 @@ services:
       - SOKETI_METRICS_PORT=9601
 
       # Coolify magic variables (optionnel)
-      - SERVICE_FQDN_SOKETI_6002=
+      - SERVICE_FQDN_SOKETI_6003=
       - SERVICE_FQDN_SOKETI_9601=/metrics
 
     ports:
-      - "${SOKETI_PORT:-6002}:6001"
+      - "${SOKETI_PORT:-6003}:6001"
       - "${SOKETI_METRICS_PORT:-9601}:9601"
 
     restart: unless-stopped
@@ -71,7 +71,7 @@ services:
       - "traefik.http.routers.soketi-ws.rule=Host(`${SERVICE_FQDN_SOKETI}`) && PathPrefix(`/app`)"
       - traefik.http.routers.soketi-ws.entryPoints=http
       - traefik.http.routers.soketi-ws.service=soketi-ws
-      - traefik.http.services.soketi-ws.loadbalancer.server.port=6002
+      - traefik.http.services.soketi-ws.loadbalancer.server.port=6003
       # Métriques endpoint (optionnel)
       - "traefik.http.routers.soketi-metrics.rule=Host(`${SERVICE_FQDN_SOKETI}`) && PathPrefix(`/metrics`)"
       - traefik.http.routers.soketi-metrics.entryPoints=http
